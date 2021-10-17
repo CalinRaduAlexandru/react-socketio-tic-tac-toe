@@ -8,10 +8,13 @@ class GameService {
       socket.on("room_joined", () => rs(true));
       socket.on("room_join_error", ({ error }) => rj(error));
     });
+    
   }
 
   public async updateGame(socket: Socket, gameMatrix: IPlayMatrix) {
     socket.emit("update_game", { matrix: gameMatrix });
+    
+    
   }
 
   public async onGameUpdate(

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import gameContext from "../../gameContext";
 import gameService from "../../services/gameService";
@@ -64,16 +64,16 @@ export function JoinRoom(props: IJoinRoomProps) {
 
     setJoining(true);
 
-    const joined = await gameService
+    const joined = await gameService 
       .joinGameRoom(socket, roomName)
       .catch((err) => {
         alert(err);
       });
 
     if (joined) setInRoom(true);
-
     setJoining(false);
   };
+
 
   return (
     <form onSubmit={joinRoom}>

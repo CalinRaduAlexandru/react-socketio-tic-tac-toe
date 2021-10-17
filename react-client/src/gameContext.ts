@@ -1,6 +1,8 @@
 import React from "react";
 
 export interface IGameContextProps {
+  isGameEnded: boolean;
+  setGameEnded: (ended: boolean) => void;
   isInRoom: boolean;
   setInRoom: (inRoom: boolean) => void;
   playerSymbol: "x" | "o";
@@ -12,6 +14,8 @@ export interface IGameContextProps {
 }
 
 const defaultState: IGameContextProps = {
+  isGameEnded: false,
+  setGameEnded: () => {},
   isInRoom: false,
   setInRoom: () => {},
   playerSymbol: "x",

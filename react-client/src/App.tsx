@@ -30,6 +30,7 @@ const MainContainer = styled.div`
 `;
 
 function App() {
+  const [isGameEnded, setGameEnded] = useState(false);
   const [isInRoom, setInRoom] = useState(false);
   const [playerSymbol, setPlayerSymbol] = useState<"x" | "o">("x");
   const [isPlayerTurn, setPlayerTurn] = useState(false);
@@ -38,16 +39,19 @@ function App() {
   const connectSocket = async () => {
     const socket = await socketService
       .connect("http://localhost:9000")
-      .catch((err) => {
+      .catch((err: any) => {
         console.log("Error: ", err);
       });
-  };
+    }
+      
 
   useEffect(() => {
     connectSocket();
   }, []);
 
   const gameContextValue: IGameContextProps = {
+    isGameEnded,
+    setGameEnded,
     isInRoom,
     setInRoom,
     playerSymbol,
@@ -70,5 +74,6 @@ function App() {
     </GameContext.Provider>
   );
 }
+
 
 export default App;

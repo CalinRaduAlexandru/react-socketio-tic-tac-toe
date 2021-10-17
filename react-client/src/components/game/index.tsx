@@ -3,7 +3,7 @@ import styled from "styled-components";
 import gameContext from "../../gameContext";
 import gameService from "../../services/gameService";
 import socketService from "../../services/socketService";
-
+ 
 const GameContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -74,7 +74,7 @@ export interface IStartGame {
   symbol: "x" | "o";
 }
 
-export function Game() {
+export function Game() { 
   const [matrix, setMatrix] = useState<IPlayMatrix>([
     [null, null, null],
     [null, null, null],
@@ -82,12 +82,18 @@ export function Game() {
   ]);
 
   const {
+    isGameEnded,
+    setGameEnded,
     playerSymbol,
     setPlayerSymbol,
     setPlayerTurn,
     isPlayerTurn,
     setGameStarted,
-    isGameStarted,
+    isGameStarted, 
+    isInRoom,
+    setInRoom,
+
+
   } = useContext(gameContext);
 
   const checkGameState = (matrix: IPlayMatrix) => {
@@ -150,10 +156,14 @@ export function Game() {
       const [currentPlayerWon, otherPlayerWon] = checkGameState(newMatrix);
       if (currentPlayerWon && otherPlayerWon) {
         gameService.gameWin(socketService.socket, "The Game is a TIE!");
+        setGameEnded(true);
         alert("The Game is a TIE!");
+      
       } else if (currentPlayerWon && !otherPlayerWon) {
         gameService.gameWin(socketService.socket, "You Lost!");
+        setGameEnded(true);
         alert("You Won!");
+
       }
 
       setPlayerTurn(false);
@@ -183,7 +193,6 @@ export function Game() {
     if (socketService.socket)
       gameService.onGameWin(socketService.socket, (message) => {
         console.log("Here", message);
-        setPlayerTurn(false);
         alert(message);
       });
   };
@@ -192,13 +201,21 @@ export function Game() {
     handleGameUpdate();
     handleGameStart();
     handleGameWin();
+    
   }, []);
+
+  const ReturnToRooms = (event:any) => {
+    event.preventDefault();
+    setInRoom(false);
+  }
+  
 
   return (
     <GameContainer>
       {!isGameStarted && (
-        <h2>Waiting for Other Player to Join to Start the Game!</h2>
+        <h1 style={{ textAlign:'center', marginBottom:'32px'}}>Waiting for Other Player to Join to Start the Game!</h1>
       )}
+      {isGameEnded && <button onClick={ReturnToRooms} style={{backgroundColor: '#f2f2f2'}}>Go back</button>}
       {(!isGameStarted || !isPlayerTurn) && <PlayStopper />}
       {matrix.map((row, rowIdx) => {
         return (
@@ -225,6 +242,7 @@ export function Game() {
           </RowContainer>
         );
       })}
+
     </GameContainer>
   );
 }
